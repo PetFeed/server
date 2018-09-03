@@ -1,0 +1,27 @@
+{
+  "name": "PetFeed",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon -e ts -x ts-node -r dotenv/config src/index.ts",
+    "build": "rimraf dist && tsc"
+  },
+  "dependencies": {
+    "@types/body-parser": "^1.17.0",
+    "@types/jsonwebtoken": "^7.2.8",
+    "@types/mongoose": "^5.2.9",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.2.12"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.18.4",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.3"
+  }
+}
