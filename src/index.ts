@@ -18,6 +18,9 @@ app.use(express.static("public/"));
 
 
 // routes
+app.get('/', (req, res) => {
+    res.send(`PetFeed server running at ${app.get("port")} port`)
+})
 
 app.listen(app.get("port"), () => {
     console.log("server running at %d port", app.get("port"));
