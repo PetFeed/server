@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+const { Iamporter, IamporterError } = require('iamporter');
 
 export interface IJWT {
 	_id: string;
@@ -34,3 +35,66 @@ export const signJWT = (data: object, secret: string) => {
 	});
 	return token;
 };
+
+export class Card {
+	private iamporter;
+	constructor() {
+		this.iamporter = new Iamporter();
+	}
+
+	// iamporter
+	// 	.payOnetime({
+	// 		merchant_uid: 'merchant_123456789',
+	// 		amount: 100,
+	// 		card_number: '6210-0381-3311-4382',
+	// 		expiry: '2022-04',
+	// 		birth: '000601',
+	// 		pwd_2digit: '40'
+	// 	})
+	// 	.then((result) => {
+	// 		console.log(result);
+	// 	})
+	// 	.catch((err) => {
+	// 		if (err instanceof IamporterError) {
+	// 			console.log(err);
+	// 		}
+	// 	});
+
+	// iamporter
+	// 	.createSubscription({
+	// 		customer_uid: '1234567890',
+	// 		card_number: '5365-1003-6311-4386',
+	// 		expiry: '2022-11',
+	// 		birth: '000105',
+	// 		pwd_2digit: '11'
+	// 	})
+	// 	.then((result) => {
+	// 		console.log(result);
+	// 	})
+	// 	.catch((err) => {
+	// 		if (err instanceof IamporterError) {
+	// 			console.log(err);
+	// 		}
+	// 		// Handle the exception
+	//     });
+
+	// iamporter.getSubscription('1234567890').then((result) => {
+	// 	console.log(result);
+	// });
+
+	// iamporter
+	// 	.paySubscription({
+	// 		customer_uid: '1234567890',
+	// 		merchant_uid: 'merchant_1234123194593943',
+	// 		amount: 100
+	// 	})
+	// 	.then((result) => {
+	// 		console.log(result);
+	// 	})
+	// 	.catch((err) => {
+	// 		if (err instanceof IamporterError) {
+	// 			console.log(err);
+	// 		}
+	// 		// Handle the exception
+	// 	});
+}
