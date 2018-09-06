@@ -9,7 +9,7 @@ export interface UserModel extends mongoose.Document {
 	nickname: string;
 	last_conn: Date;
 	create_date: Date;
-	rank: string;
+	rank: string; // Admin, Premium, General
 	profile: string;
 	following: UserModel[];
 	followers: UserModel[];
@@ -20,10 +20,17 @@ export interface UserModel extends mongoose.Document {
 }
 
 const userSchema = new mongoose.Schema({
-	user_id: String,
-	user_pw: String,
+	user_id: { type: String, required: true },
+	user_pw: { type: String, required: true },
+	nickname: { type: String, required: true },
 	last_conn: { type: Date, default: Date.now() },
-	create_date: { type: Date, default: Date.now() }
+	create_date: { type: Date, default: Date.now() },
+	rank: { type: String, default: 'General' },
+	profile: { type: String, default: '/images/default.jpg' },
+	following: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ], // 날 팔로우 한사람
+	followers: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ], // 내가 팔로우 한사람
+	cards: [ { type: String } ],
+	logs: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Log' } ]
 });
 
 userSchema.pre('save', async function hashPasword(next) {
