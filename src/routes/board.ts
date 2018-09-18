@@ -2,7 +2,6 @@ import { Router, Request, Response } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs-extra";
-import { getToday, filterMap } from "../utils";
 
 import Board from "../models/Board";
 import User from "../models/User";
@@ -23,6 +22,10 @@ var storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage });
+router.get("/", async (req, res) => {
+    const boards = await Board.find({});
+    res.status(200).json({ success: true, data: boards });
+});
 // Create Board
 router.post("/", upload.array("pictures"), async (req, res) => {
     const {
@@ -32,7 +35,7 @@ router.post("/", upload.array("pictures"), async (req, res) => {
     const board = new Board({
         contents,
         hash_tags,
-        writer: await User.findOne({ _id: req.user })
+        writer: req.user
     });
 
     const pendingPaths = (<Express.Multer.File[]>req.files).map(async file => {

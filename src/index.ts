@@ -31,10 +31,12 @@ app.get("/", (req, res) => {
 import authController from "./routes/auth";
 import userController from "./routes/user";
 import boardController from "./routes/board";
+import commentController from "./routes/comments";
 import { verifyJWTMiddleware } from "./utils";
 app.use("/auth", authController);
 app.use("/user", verifyJWTMiddleware, userController);
 app.use("/board", verifyJWTMiddleware, boardController);
+app.use("/comment", verifyJWTMiddleware, commentController);
 
 app.listen(app.get("port"), () => {
     console.log("server running at %d port", app.get("port"));

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { UserModel } from "./User";
 import { CommentModel } from "./Comment";
 
-export interface BoardtModel extends mongoose.Document {
+export interface BoardModel extends mongoose.Document {
     createdate: Date;
     contents: string;
     pictures: string[];
@@ -22,7 +22,7 @@ const boardSchema = new mongoose.Schema({
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
 });
 
-const Board: mongoose.Model<BoardtModel> = mongoose.model<BoardtModel>(
+const Board: mongoose.Model<BoardModel> = mongoose.model<BoardModel>(
     "Board",
     boardSchema
 );
