@@ -18,31 +18,35 @@ const findRoot = async (id: string) => {
 };
 
 router.post("/", async (req: Request, res: Response) => {
-    const {
-        body: { parent, content, type }
-    } = req;
-    const comment = new Comment({
-        parent: parent,
-        writer: req.user,
-        content
-    });
-    await comment.save();
+    try {
+        const {
+            body: { parent, content, type }
+        } = req;
+        const comment = new Comment({
+            parent: parent,
+            writer: req.user,
+            content
+        });
+        await comment.save();
 
-    if (type == "re") {
-        await Comment.findOneAndUpdate(
-            { _id: parent },
-            { $push: { re_comments: comment._id } }
-        );
-    } else {
-        await Board.findOneAndUpdate(
-            { _id: parent },
-            { $push: { comments: comment._id } }
-        );
+        if (type == "re") {
+            await Comment.findOneAndUpdate(
+                { _id: parent },
+                { $push: { re_comments: comment._id } }
+            );
+        } else {
+            await Board.findOneAndUpdate(
+                { _id: parent },
+                { $push: { comments: comment._id } }
+            );
+        }
+
+        // find root
+        const board = await findRoot(parent);
+        res.status(200).json({ success: true, board });
+    } catch (e) {
+        res.status(200).json({ success: false, message: e.message });
     }
-
-    // find root
-    const board = await findRoot(parent);
-    res.status(200).json({ success: true, board });
 });
 
 export default router;

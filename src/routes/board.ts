@@ -22,6 +22,11 @@ var storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage });
+
+router.get("/:id", async (req, res) => {
+    const board = await Board.findOne({ _id: req.params.id });
+    res.status(200).json({ success: true, data: board });
+});
 router.get("/", async (req, res) => {
     const boards = await Board.find({});
     res.status(200).json({ success: true, data: boards });
@@ -54,7 +59,6 @@ router.post("/", upload.array("pictures"), async (req, res) => {
         }
     });
     const paths = await Promise.all(pendingPaths);
-    console.log(paths);
     board.pictures = paths;
     await board.save();
     res.status(200).json(board);

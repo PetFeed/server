@@ -1,8 +1,10 @@
 import { Router, Request, Response } from "express";
 import multer from "multer";
+import { Types } from "mongoose";
 
 import User, { UserModel } from "../models/User";
 import { filterMap, getToday } from "../utils";
+import Board from "../models/Board";
 
 const router = Router();
 var storage = multer.diskStorage({
@@ -71,7 +73,7 @@ router.get("/follwers", async (req, res) => {
                 UserModel
             >;
         });
-        res.status(200).json({ success: true, followings: user.followers });
+        res.status(200).json({ success: true, data: user.followers });
     } catch (e) {
         res.status(200).json({ success: false, message: e.message });
     }
@@ -85,7 +87,7 @@ router.get("/follwings", async (req, res) => {
                 UserModel
             >;
         });
-        res.status(200).json({ success: true, followings: user.following });
+        res.status(200).json({ success: true, data: user.following });
     } catch (e) {
         res.status(200).json({ success: false, message: e.message });
     }
@@ -122,6 +124,15 @@ router.delete("/follow", async (req, res) => {
         await from_user.save();
         await to_user.save();
         res.status(200).json({ success: true });
+    } catch (e) {
+        res.status(200).json({ success: false, message: e.message });
+    }
+});
+
+router.get("/boards", async (req, res) => {
+    try {
+        const boards = await Board.find({ writer: req.user });
+        res.status(200).json({ success: true, data: boards });
     } catch (e) {
         res.status(200).json({ success: false, message: e.message });
     }
