@@ -5,6 +5,18 @@ import Board from "../models/Board";
 
 const router = Router();
 
+const findRoot = async (id: string) => {
+    const comment = await Comment.findOne({ _id: id });
+    if (!comment) {
+        return await Board.findOne({ _id: id }).populate({
+            path: "comments",
+            populate: { path: "re_comments" }
+        });
+    } else {
+        return findRoot(comment.parent);
+    }
+};
+
 router.post("/", async (req: Request, res: Response) => {
     const {
         body: { parent, content, type }
@@ -24,11 +36,13 @@ router.post("/", async (req: Request, res: Response) => {
     } else {
         await Board.findOneAndUpdate(
             { _id: parent },
-            { $push: { comments: comment._id } },
-            { upsert: true, new: true }
+            { $push: { comments: comment._id } }
         );
     }
-    res.status(200).json({ success: true });
+
+    // find root
+    const board = await findRoot(parent);
+    res.status(200).json({ success: true, board });
 });
 
 export default router;

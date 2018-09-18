@@ -3,16 +3,16 @@ import { BoardModel } from "./Board";
 import { UserModel } from "./User";
 
 export interface CommentModel extends mongoose.Document {
-    parent: BoardModel;
+    parent: string;
     writer: UserModel;
-    contents: string;
+    content: string;
     re_comments: CommentModel[];
 }
 
 const commentSchema = new mongoose.Schema({
-    parent: { type: mongoose.Schema.Types.ObjectId, ref: "Board" },
+    parent: { type: String, required: true },
     writer: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    contents: { type: String },
+    content: { type: String },
     re_comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }]
 });
 
