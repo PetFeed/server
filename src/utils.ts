@@ -61,17 +61,9 @@ export const getToday = (): string => {
     var mm = today.getMinutes();
 
     var yyyy = today.getFullYear();
-    return (
-        yyyy +
-        "." +
-        (MM < 10 ? "0" + MM : MM) +
-        "." +
-        (dd < 10 ? "0" + dd : dd) +
-        "_" +
-        (hh < 10 ? "0" + hh : hh) +
-        ":" +
-        (mm < 10 ? "0" + mm : mm)
-    );
+    return `${yyyy}-${MM < 10 ? "0" + MM : MM}-${dd < 10 ? "0" + dd : dd}-${
+        hh < 10 ? "0" + hh : hh
+    }:${mm < 10 ? "0" + mm : mm}`;
 };
 // export class Card {
 // 	private iamporter;
