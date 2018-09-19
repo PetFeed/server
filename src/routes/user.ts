@@ -13,11 +13,8 @@ const storage = multer.diskStorage({
     },
     async filename(req, file, cb) {
         const user = await getUserById(req.user!);
-        cb(
-            null,
-            user.nickname + "-" + getToday() + "." + file.mimetype.split("/")[1],
-        );
-    },
+        cb(null, user.nickname + "-" + getToday() + "." + file.mimetype.split("/")[1]);
+    }
 });
 const upload = multer({ storage });
 
@@ -43,21 +40,14 @@ router.get("/", async (req, res) => {
 // 유저 정보 변경
 router.patch("/", upload.single("profile"), async function(req, res) {
     const {
-        body: { nickname },
+        body: { nickname }
     } = req;
-    const profile = req.file
-        ? req.file.filename
-            ? "/images/" + req.file.filename
-            : undefined
-        : undefined;
+    const profile = req.file ? (req.file.filename ? "/images/" + req.file.filename : undefined) : undefined;
     // console.log(req.file, !nickname);
     const update = filterMap({ nickname, profile });
     // console.log(filtered);
     try {
-        const user = await User.findOneAndUpdate(
-            { _id: req.user },
-            { $set: update },
-        );
+        const user = await User.findOneAndUpdate({ _id: req.user }, { $set: update });
         console.log(user);
         res.status(200).json({ success: true });
     } catch (e) {
@@ -69,9 +59,7 @@ router.patch("/", upload.single("profile"), async function(req, res) {
 router.get("/follwers", async (req, res) => {
     try {
         const user = await getUserById(req.user!).then(user => {
-            return User.populate(user, { path: "followers" }) as Promise<
-                UserModel
-            >;
+            return User.populate(user, { path: "followers" }) as Promise<UserModel>;
         });
         res.status(200).json({ success: true, data: user.followers });
     } catch (e) {
@@ -83,9 +71,7 @@ router.get("/follwers", async (req, res) => {
 router.get("/follwings", async (req, res) => {
     try {
         const user = await getUserById(req.user!).then(user => {
-            return User.populate(user, { path: "following" }) as Promise<
-                UserModel
-            >;
+            return User.populate(user, { path: "following" }) as Promise<UserModel>;
         });
         res.status(200).json({ success: true, data: user.following });
     } catch (e) {
@@ -96,7 +82,7 @@ router.get("/follwings", async (req, res) => {
 // 팔로우 하기
 router.post("/follow", async (req, res) => {
     const {
-        body: { to_id },
+        body: { to_id }
     } = req;
     try {
         const from_user = await getUserById(req.user!);
@@ -114,7 +100,7 @@ router.post("/follow", async (req, res) => {
 // 팔로우 취소
 router.delete("/follow", async (req, res) => {
     const {
-        body: { to_id },
+        body: { to_id }
     } = req;
     try {
         const from_user = await getUserById(req.user!);
@@ -131,7 +117,7 @@ router.delete("/follow", async (req, res) => {
 
 router.get("/boards", async (req, res) => {
     try {
-        const boards = await Board.find({ writer: req.user });
+        const boards = await Board.find({ writer: req.user }).populate("writer");
         res.status(200).json({ success: true, data: boards });
     } catch (e) {
         res.status(200).json({ success: false, message: e.message });
