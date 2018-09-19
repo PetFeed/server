@@ -23,13 +23,13 @@ router.post("/", async (req: Request, res: Response) => {
             body: { parent, content, type }
         } = req;
         const comment = new Comment({
-            parent: parent,
+            parent,
             writer: req.user,
             content
         });
         await comment.save();
 
-        if (type == "re") {
+        if (type === "re") {
             await Comment.findOneAndUpdate(
                 { _id: parent },
                 { $push: { re_comments: comment._id } }

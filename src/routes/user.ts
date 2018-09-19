@@ -7,17 +7,17 @@ import { filterMap, getToday } from "../utils";
 import Board from "../models/Board";
 
 const router = Router();
-var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
+const storage = multer.diskStorage({
+    destination(req, file, cb) {
         cb(null, "public/images/");
     },
-    filename: async function(req, file, cb) {
+    async filename(req, file, cb) {
         const user = await getUserById(req.user!);
         cb(
             null,
-            user.nickname + "-" + getToday() + "." + file.mimetype.split("/")[1]
+            user.nickname + "-" + getToday() + "." + file.mimetype.split("/")[1],
         );
-    }
+    },
 });
 const upload = multer({ storage });
 
@@ -43,7 +43,7 @@ router.get("/", async (req, res) => {
 // 유저 정보 변경
 router.patch("/", upload.single("profile"), async function(req, res) {
     const {
-        body: { nickname }
+        body: { nickname },
     } = req;
     const profile = req.file
         ? req.file.filename
@@ -56,7 +56,7 @@ router.patch("/", upload.single("profile"), async function(req, res) {
     try {
         const user = await User.findOneAndUpdate(
             { _id: req.user },
-            { $set: update }
+            { $set: update },
         );
         console.log(user);
         res.status(200).json({ success: true });
@@ -96,7 +96,7 @@ router.get("/follwings", async (req, res) => {
 // 팔로우 하기
 router.post("/follow", async (req, res) => {
     const {
-        body: { to_id }
+        body: { to_id },
     } = req;
     try {
         const from_user = await getUserById(req.user!);
@@ -114,7 +114,7 @@ router.post("/follow", async (req, res) => {
 // 팔로우 취소
 router.delete("/follow", async (req, res) => {
     const {
-        body: { to_id }
+        body: { to_id },
     } = req;
     try {
         const from_user = await getUserById(req.user!);

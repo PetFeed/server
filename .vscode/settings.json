@@ -6,8 +6,8 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/node_modules": true,
-        "**/.vscode": true
+        "**/.vscode": false
     },
-    "tslint.autoFixOnSave": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "tslint.autoFixOnSave": true
 }
