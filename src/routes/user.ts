@@ -124,4 +124,8 @@ router.get('/boards', async (req, res) => {
 	}
 });
 
+router.get('/log', async (req, res) => {});
+
+router.get('/activity', async (req, res) => {});
+
 export default router;
