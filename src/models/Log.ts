@@ -8,17 +8,17 @@ export interface LogModel extends mongoose.Document {
 	dataId: string;
 	date: Date;
 	text: string;
-	from: UserModel;
-	to: UserModel;
+	// from: UserModel;
+	// to: UserModel;
 }
 
 const logSchema = new mongoose.Schema({
 	type: { type: String, required: true }, // User, Board, Comment
 	dataId: { type: String, required: true },
 	date: { type: Date, default: new Date() },
-	text: { type: String, required: true },
-	from: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-	to: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+	text: { type: String, required: true }
+	// from: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+	// to: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 const Log: mongoose.Model<LogModel> = mongoose.model<LogModel>('Log', logSchema);
