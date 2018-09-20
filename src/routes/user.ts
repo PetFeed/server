@@ -117,7 +117,7 @@ router.delete("/follow", async (req, res) => {
 
 router.get("/boards", async (req, res) => {
     try {
-        const boards = await Board.find({ writer: req.user }).populate("writer");
+        const boards = await Board.find({ writer: req.user }).sort('-createdate').populate("writer").populate("comments");
         res.status(200).json({ success: true, data: boards });
     } catch (e) {
         res.status(200).json({ success: false, message: e.message });

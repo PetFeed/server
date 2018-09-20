@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import rp, { RequestPromise } from 'request-promise';
-import * as google from 'googleapis';
+// import rp, { RequestPromise } from 'request-promise';
+// import * as google from 'googleapis';
 // const { Iamporter, IamporterError } = require('iamporter');
 
 export interface IJWT {
