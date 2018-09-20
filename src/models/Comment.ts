@@ -4,9 +4,9 @@ import { UserModel } from './User';
 
 export interface CommentModel extends mongoose.Document {
 	parent: string;
-	writer: UserModel;
+	writer: UserModel | string;
 	content: string;
-	re_comments: CommentModel[];
+	re_comments: CommentModel[] | string[];
 	create_date: Date;
 }
 

@@ -2,6 +2,7 @@ import { Router, Response, Request } from 'express';
 
 import Comment from '../models/Comment';
 import Board from '../models/Board';
+import { makeCommentLog, makeReCommentLog } from './log';
 
 const router = Router();
 
@@ -26,15 +27,18 @@ router.post('/', async (req: Request, res: Response) => {
 			content
 		});
 		await comment.save();
+		const board = await findRoot(parent);
 
 		if (type === 're') {
+			const pComment = await Comment.findOne({ _id: parent });
 			await Comment.findOneAndUpdate({ _id: parent }, { $push: { re_comments: comment._id } });
+			makeReCommentLog(req.user!!, board.writer._id, pComment!!.writer as string, comment._id);
 		} else {
 			await Board.findOneAndUpdate({ _id: parent }, { $push: { comments: comment._id } });
+			makeCommentLog(req.user!!, board.writer as string, comment._id);
 		}
 
 		// find root
-		const board = await findRoot(parent);
 		res.status(200).json({ success: true, data: board });
 	} catch (e) {
 		res.status(200).json({ success: false, message: e.message });

@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 import User, { UserModel } from '../models/User';
 import { filterMap, getToday } from '../utils';
 import Board from '../models/Board';
+import { makeFollowLog } from './log';
 
 const router = Router();
 const storage = multer.diskStorage({
@@ -87,6 +88,7 @@ router.post('/follow', async (req, res) => {
 		to_user.followers.push(from_user._id);
 		await from_user.save();
 		await to_user.save();
+		makeFollowLog(req.user!!, to_id);
 		res.status(200).json({ success: true });
 	} catch (e) {
 		res.status(200).json({ success: false, message: e.message });
@@ -109,14 +111,17 @@ router.delete('/follow', async (req, res) => {
 	}
 });
 
-router.get("/boards", async (req, res) => {
-    try {
-        const boards = await Board.find({ writer: req.user }).sort('-createdate').populate("writer").populate("comments")
-				.populate({path: 'comments', populate: {path: 'writer'}});
-        res.status(200).json({ success: true, data: boards });
-    } catch (e) {
-        res.status(200).json({ success: false, message: e.message });
-    }
+router.get('/boards', async (req, res) => {
+	try {
+		const boards = await Board.find({ writer: req.user })
+			.sort('-createdate')
+			.populate('writer')
+			.populate('comments')
+			.populate({ path: 'comments', populate: { path: 'writer' } });
+		res.status(200).json({ success: true, data: boards });
+	} catch (e) {
+		res.status(200).json({ success: false, message: e.message });
+	}
 });
 
 export default router;

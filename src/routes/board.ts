@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 
 import Board from '../models/Board';
 import User from '../models/User';
+import { makeBoardLog } from './log';
 
 const router = Router();
 const storage = multer.diskStorage({
@@ -87,6 +88,7 @@ router.post('/like', async (req, res) => {
 			const idx = (board.likes as string[]).indexOf(req.user!!);
 			if (idx < 0) {
 				(board.likes as string[]).push(req.user!!);
+				makeBoardLog(board.writer as string, req.user!!, board._id);
 			} else {
 				(board.likes as string[]).splice(idx, 1);
 			}
