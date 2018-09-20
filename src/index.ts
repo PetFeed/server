@@ -20,10 +20,10 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static('public/'));
 // stdout
-app.use(morgan(':remote-addr [:date[clf]] ":method :url" :response-time ms'));
+app.use(morgan(':remote-addr [:date[clf]] ":method :status :url" :response-time ms'));
 // log file
 app.use(
-	morgan(':remote-addr [:date[clf]] ":method :url" :response-time ms', {
+	morgan(':remote-addr [:date[clf]] ":method :status :url" :response-time ms', {
 		stream: fs.createWriteStream('petfeed.log', {
 			flags: 'a'
 		})
