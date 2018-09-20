@@ -5,13 +5,14 @@ import { signJWT } from '../utils';
 const router = Router();
 
 router.post('/login', async (req: Request, res: Response) => {
-	const { body: { user_id, user_pw } } = req;
+	const { body: { user_id, user_pw, fcm_token } } = req;
 	try {
 		let user = await User.findOne({ user_id });
 		if (user) {
 			const isValid = await user.comparePW(user_pw);
 			if (isValid) {
 				user.last_conn = new Date();
+				user.fcm_token = fcm_token;
 				await user.save();
 				const token = signJWT({ _id: user._id }, req.app.get('jwt-secret'));
 				res.status(200).json({
