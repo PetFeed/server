@@ -216,6 +216,7 @@ export const makeReCommentLog = async (from: string, board_owner: string, commen
 				boardUser.logs.push(mBoardUserLog);
 				await boardUser.save();
 				sendFcmMessage(commentUserMsg);
+			} else if (from == board_owner && board_owner == comment_owner) {
 			} else {
 				fromUser.logs.push(fromLog);
 				await fromUser.save();

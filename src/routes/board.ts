@@ -27,7 +27,7 @@ const upload = multer({ storage });
 router.get('/:id', async (req, res) => {
 	const board = await Board.findOne({ _id: req.params.id })
 		.populate('writer')
-		.populate({ path: 'comments', populate: { path: 're_comments' } })
+		.populate({ path: 'comments', populate: { path: 're_comments', populate: 'writer' } })
 		.populate({ path: 'comments', populate: { path: 'writer' } });
 	res.status(200).json({ success: true, data: board });
 });
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 	const boards = await Board.find({})
 		.sort('-createdate')
 		.populate('writer')
-		.populate({ path: 'comments', populate: { path: 're_comments' } })
+		.populate({ path: 'comments', populate: { path: 're_comments', populate: 'writer' } })
 		.populate({ path: 'comments', populate: { path: 'writer' } });
 	res.status(200).json({ success: true, data: boards });
 });
