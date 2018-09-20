@@ -58,6 +58,7 @@ export const makeFollowLog = async (from: string, to: string) => {
 	}
 };
 
+// Like Log
 export const makeBoardLog = async (from: string, to: string, boardId: string) => {
 	try {
 		const fromUser = await User.findOne({ _id: from });

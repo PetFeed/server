@@ -64,3 +64,4 @@ typings/
 .env
 dist/
 public/boards/
+public/images/temp/
