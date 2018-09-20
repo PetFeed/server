@@ -28,9 +28,11 @@ router.get('/:id', async (req, res) => {
 	res.status(200).json({ success: true, data: board });
 });
 router.get('/', async (req, res) => {
-	const boards = await Board.find({}).sort('-createdate').populate('writer')
-				.populate({path: 'comments', populate: {path: 're_comments'}})
-				.populate({path: 'comments', populate: {path: 'writer'}});
+	const boards = await Board.find({})
+		.sort('-createdate')
+		.populate('writer')
+		.populate({ path: 'comments', populate: { path: 're_comments' } })
+		.populate({ path: 'comments', populate: { path: 'writer' } });
 	res.status(200).json({ success: true, data: boards });
 });
 // Create Board
@@ -74,5 +76,28 @@ router.patch('/', async (req, res) => {});
 
 // Del Board
 router.delete('/', async (req, res) => {});
+
+// Board
+router.post('/like', async (req, res) => {
+	try {
+		const { body: { board_id } } = req;
+
+		const board = await Board.findOne({ _id: board_id });
+		if (board) {
+			const idx = (board.likes as string[]).indexOf(req.user!!);
+			if (idx < 0) {
+				(board.likes as string[]).push(req.user!!);
+			} else {
+				(board.likes as string[]).splice(idx, 1);
+			}
+			await board.save();
+			res.status(200).json({ success: true, data: board });
+		} else {
+			throw Error('Board not found');
+		}
+	} catch (e) {
+		res.status(400).json({ success: false, message: e.message });
+	}
+});
 
 export default router;
