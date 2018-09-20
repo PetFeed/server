@@ -18,6 +18,9 @@ const router = Router();
 
 export const makeFollowLog = async (from: string, to: string) => {
 	try {
+		if (from == to) {
+			return;
+		}
 		const fromUser = await User.findOne({ _id: from });
 		const toUser = await User.findOne({ _id: to });
 
@@ -61,6 +64,9 @@ export const makeFollowLog = async (from: string, to: string) => {
 // Like Log
 export const makeBoardLog = async (from: string, to: string, boardId: string) => {
 	try {
+		if (from == to) {
+			return;
+		}
 		const fromUser = await User.findOne({ _id: from });
 		const toUser = await User.findOne({ _id: to });
 
@@ -103,6 +109,9 @@ export const makeBoardLog = async (from: string, to: string, boardId: string) =>
 
 export const makeCommentLog = async (from: string, to: string, commentId) => {
 	try {
+		if (from == to) {
+			return;
+		}
 		const fromUser = await User.findOne({ _id: from });
 		const toUser = await User.findOne({ _id: to });
 
@@ -189,14 +198,34 @@ export const makeReCommentLog = async (from: string, board_owner: string, commen
 				text: `${boardUser.nickname}님의 게시물에 있는 회원님의 댓글에 ${fromUser.nickname}님이 대댓글을 남겼습니다.`
 			});
 
-			fromUser.logs.push(fromLog);
-			await fromUser.save();
-			boardUser.logs.push(boardUserLog);
-			await boardUser.save();
-			commentUser.logs.push(commentUserLog);
-			await commentUser.save();
-			sendFcmMessage(boardUserMsg);
-			sendFcmMessage(commentUserMsg);
+			if (from == board_owner) {
+				commentUser.logs.push(commentUserLog);
+				await commentUser.save();
+				sendFcmMessage(commentUserMsg);
+			} else if (from == comment_owner) {
+				boardUser.logs.push(boardUserLog);
+				await boardUser.save();
+				sendFcmMessage(commentUserMsg);
+			} else if (board_owner == comment_owner) {
+				boardUserMsg.message.data.body = `회원님의 게시물에 있는 회원님의 댓글에 ${fromUser.nickname}님이 대댓글을 남겼습니다.`;
+				const mBoardUserLog = new Log({
+					type: 'Board',
+					dataId: commentId,
+					text: `회원님의 게시물에 있는 회원님의 댓글에 ${fromUser.nickname}님이 대댓글을 남겼습니다..`
+				});
+				boardUser.logs.push(mBoardUserLog);
+				await boardUser.save();
+				sendFcmMessage(commentUserMsg);
+			} else {
+				fromUser.logs.push(fromLog);
+				await fromUser.save();
+				boardUser.logs.push(boardUserLog);
+				await boardUser.save();
+				commentUser.logs.push(commentUserLog);
+				await commentUser.save();
+				sendFcmMessage(boardUserMsg);
+				sendFcmMessage(commentUserMsg);
+			}
 		} else {
 			throw Error('Log User not found!');
 		}
