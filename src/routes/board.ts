@@ -28,7 +28,8 @@ router.get('/:id', async (req, res) => {
 	res.status(200).json({ success: true, data: board });
 });
 router.get('/', async (req, res) => {
-	const boards = await Board.find({}).sort('-createdate').populate('writer').populate('comments');
+	const boards = await Board.find({}).sort('-createdate').populate('writer').populate('comments')
+				.populate({path: 'comments', populate: {path: 'writer'}});
 	res.status(200).json({ success: true, data: boards });
 });
 // Create Board
