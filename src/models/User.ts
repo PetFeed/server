@@ -15,6 +15,7 @@ export interface UserModel extends mongoose.Document {
 	followers: UserModel[];
 	cards: string[];
 	logs: LogModel[];
+	fcm_token: string;
 
 	comparePW: (pw: string) => boolean;
 }
@@ -30,7 +31,8 @@ const userSchema = new mongoose.Schema({
 	following: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ], // 날 팔로우 한사람
 	followers: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' } ], // 내가 팔로우 한사람
 	cards: [ { type: String } ],
-	logs: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Log' } ]
+	logs: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Log' } ],
+	fcm_token: { type: String, required: true }
 });
 
 userSchema.pre('save', async function hashPasword(next) {

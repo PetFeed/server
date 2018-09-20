@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-// import rp, { RequestPromise } from 'request-promise';
-// import * as google from 'googleapis';
+import { google } from 'googleapis';
+import https from 'https';
 // const { Iamporter, IamporterError } = require('iamporter');
 
 export interface IJWT {
@@ -59,36 +59,59 @@ export const getToday = (): string => {
 		? '0' + mm
 		: mm}`;
 };
+var MESSAGING_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
+var SCOPES = [ MESSAGING_SCOPE ];
 
-// function getAccessToken() {
-// 	return new Promise(function(resolve, reject) {
-// 	  var key = require('../serviceAccount');
-// 	  var jwtClient = new google.auth.JWT(
-// 		key.client_email,
-// 		null,
-// 		key.private_key,
-// 		SCOPES,
-// 		null
-// 	  );
-// 	  jwtClient.authorize(function(err, tokens) {
-// 		if (err) {
-// 		  reject(err);
-// 		  return;
-// 		}
-// 		resolve(tokens.access_token);
-// 	  });
-// 	});
-//   }
+const getAccessToken = (): Promise<string> => {
+	return new Promise((resolve, reject) => {
+		var key = require('../serviceAccountKey.json');
+		var jwtClient = new google.auth.JWT(key.client_email, undefined, key.private_key, SCOPES, undefined);
+		jwtClient.authorize((err, tokens) => {
+			if (err) {
+				reject(err);
+				return;
+			}
+			resolve(tokens!!.access_token!!);
+		});
+	});
+};
 
-// interface IFCMOption {
-// 	registration_ids: string[];
-// 	priority: string;
-// 	restricted_package_name: string;
-// 	data: {
-// 		title: string;
-// 		body: string;
-// 	};
-// }
+interface IFCMOption {
+	message: {
+		token: string;
+		data: {
+			body: string;
+			title: string;
+		};
+	};
+}
+
+export async function sendFcmMessage(fcmMessage) {
+	const accessToken = await getAccessToken();
+	const key = require('../serviceAccountKey.json');
+	console.log(accessToken);
+	const options = {
+		hostname: 'fcm.googleapis.com',
+		path: `/v1/projects/${key.project_id}/messages:send`, // ‘/v1/projects/’ + PROJECT_ID + ‘/messages:send’;
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${accessToken}`
+		}
+	};
+
+	const request = https.request(options, function(resp) {
+		resp.setEncoding('utf8');
+		resp.on('data', function(data) {
+			console.log(`Message sent to Firebase for delivery, response: ${data}`);
+		});
+	});
+	request.on('error', function(err) {
+		console.log(`Unable to send message to Firebase ${err}`);
+	});
+	request.write(JSON.stringify(fcmMessage));
+	request.end();
+}
+
 // export class FCM {
 // 	private serverKey: string;
 // 	private fcmOptions = {

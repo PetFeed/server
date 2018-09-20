@@ -31,14 +31,15 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 router.post('/register', async (req: Request, res: Response) => {
-	const { body: { user_id, user_pw, nickname } } = req;
+	const { body: { user_id, user_pw, nickname, fcm_token } } = req;
 	try {
 		let user = await User.findOne({ user_id });
 		if (!user) {
 			user = new User({
 				user_id,
 				user_pw,
-				nickname
+				nickname,
+				fcm_token
 			});
 			user.save();
 			res.status(200).json({ success: true, message: 'success', user });
