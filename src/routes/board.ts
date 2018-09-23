@@ -86,7 +86,10 @@ router.post('/like', async (req, res) => {
 	try {
 		const { body: { board_id } } = req;
 
-		const board = await Board.findOne({ _id: board_id });
+		const board = await Board.findOne({ _id: board_id })
+			.populate('writer')
+			.populate({ path: 'comments', populate: { path: 're_comments', populate: { path: 'writer' } } })
+			.populate({ path: 'comments', populate: { path: 'writer' } });
 		if (board) {
 			const idx = (board.likes as string[]).indexOf(req.user!!);
 			if (idx < 0) {
