@@ -134,7 +134,7 @@ router.get("/boards", async (req, res) => {
 
 router.get("/notice", async (req, res) => {
     try {
-        const user = await User.findOne({ _id: req.user }).populate({ path: "logs", match: { to: { $eq: req.user } } });
+        const user = await User.findOne({ _id: req.user }).populate({ path: "logs", populate: { path: "from" }, match: { to: { $eq: req.user } } });
         res.status(200).json({ succes: true, data: user });
     } catch (e) {
         res.status(400).json({ success: false, message: e.message });
@@ -143,7 +143,7 @@ router.get("/notice", async (req, res) => {
 
 router.get("/activity", async (req, res) => {
     try {
-        const user = await User.findOne({ _id: req.user }).populate({ path: "logs", match: { from: { $eq: req.user } } });
+        const user = await User.findOne({ _id: req.user }).populate({ path: "logs", populate: { path: "from" }, match: { from: { $eq: req.user } } });
         res.status(200).json({ succes: true, data: user });
     } catch (e) {
         res.status(400).json({ success: false, message: e.message });
