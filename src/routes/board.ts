@@ -107,26 +107,26 @@ router.post("/like", async (req, res) => {
         const {
             body: { board_id }
         } = req;
-		const board = await Board.findOne({ _id: board_id })
-			.populate('writer')
-			.populate({ path: 'comments', populate: { path: 're_comments', populate: { path: 'writer' } } })
-			.populate({ path: 'comments', populate: { path: 'writer' } });
-		if (board) {
-			const idx = (board.likes as string[]).indexOf(req.user!!);
-			if (idx < 0) {
-				(board.likes as string[]).push(req.user!!);
-				makeBoardLog(board.writer as string, req.user!!, board._id);
-			} else {
-				(board.likes as string[]).splice(idx, 1);
-			}
-			await board.save();
-			res.status(200).json({ success: true, data: board });
-		} else {
-			throw Error('Board not found');
-		}
-	} catch (e) {
-		res.status(400).json({ success: false, message: e.message });
-	}
+        const board = await Board.findOne({ _id: board_id })
+            .populate("writer")
+            .populate({ path: "comments", populate: { path: "re_comments", populate: { path: "writer" } } })
+            .populate({ path: "comments", populate: { path: "writer" } });
+        if (board) {
+            const idx = (board.likes as string[]).indexOf(req.user!!);
+            if (idx < 0) {
+                (board.likes as string[]).push(req.user!!);
+                makeBoardLog(req.user!!, board.writer as string, board._id);
+            } else {
+                (board.likes as string[]).splice(idx, 1);
+            }
+            await board.save();
+            res.status(200).json({ success: true, data: board });
+        } else {
+            throw Error("Board not found");
+        }
+    } catch (e) {
+        res.status(400).json({ success: false, message: e.message });
+    }
 });
 
 export default router;

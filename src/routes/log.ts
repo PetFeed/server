@@ -38,10 +38,11 @@ export const makeFollowLog = async (from: string, to: string) => {
             const fromLog = new Log({
                 type: "User",
                 dataId: toUser._id,
-                text: `회원님이 ${toUser.nickname}을 팔로우했습니다.`,
+                text: `회원님이 ${toUser.nickname}님을 팔로우했습니다.`,
                 from: fromUser._id,
                 to: toUser._id
             });
+            await fromLog.save();
             const toLog = new Log({
                 type: "User",
                 dataId: fromUser._id,
@@ -49,6 +50,7 @@ export const makeFollowLog = async (from: string, to: string) => {
                 from: fromUser._id,
                 to: toUser._id
             });
+            await toLog.save();
             fromUser.logs.push(fromLog);
             await fromUser.save();
             toUser.logs.push(toLog);
@@ -84,10 +86,11 @@ export const makeBoardLog = async (from: string, to: string, boardId: string) =>
             const fromLog = new Log({
                 type: "Board",
                 dataId: boardId,
-                text: `회원님이 ${toUser.nickname}의 게시물을 좋아합니다.`,
+                text: `회원님이 ${toUser.nickname}님의 게시물을 좋아합니다.`,
                 from: fromUser._id,
                 to: toUser._id
             });
+            await fromLog.save();
             const toLog = new Log({
                 type: "Board",
                 dataId: boardId,
@@ -95,6 +98,7 @@ export const makeBoardLog = async (from: string, to: string, boardId: string) =>
                 from: fromUser._id,
                 to: toUser._id
             });
+            await toLog.save();
             fromUser.logs.push(fromLog);
             await fromUser.save();
             toUser.logs.push(toLog);
