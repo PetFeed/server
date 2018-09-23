@@ -11,8 +11,8 @@ export interface UserModel extends mongoose.Document {
     create_date: Date;
     rank: string; // Admin, Premium, General
     profile: string;
-    following: UserModel[];
-    followers: UserModel[];
+    following: string[] | UserModel[];
+    followers: string[] | UserModel[];
     cards: string[];
     logs: LogModel[];
     fcm_token: string;

@@ -87,8 +87,12 @@ router.post("/follow", async (req, res) => {
     try {
         const from_user = await getUserById(req.user!);
         const to_user = await getUserById(to_id);
-        from_user.following.push(to_user._id);
-        to_user.followers.push(from_user._id);
+        if ((from_user.following as string[]).indexOf(to_id) > 0 || (to_user.followers as string[]).indexOf(req.user!!) > 0) {
+            throw Error("Exist User");
+            return;
+        }
+        (from_user.following as string[]).push(to_user._id);
+        (to_user.followers as string[]).push(from_user._id);
         await from_user.save();
         await to_user.save();
         makeFollowLog(req.user!!, to_id);
@@ -106,8 +110,12 @@ router.delete("/follow", async (req, res) => {
     try {
         const from_user = await getUserById(req.user!);
         const to_user = await getUserById(to_id);
-        from_user.following.splice(from_user.following.indexOf(to_user._id), 1);
-        to_user.followers.splice(to_user.followers.indexOf(from_user._id), 1);
+        if ((from_user.following as string[]).indexOf(to_id) < 0 || (to_user.followers as string[]).indexOf(req.user!!) < 0) {
+            throw Error("Not Found User");
+            return;
+        }
+        from_user.following.splice((from_user.following as string[]).indexOf(to_user._id), 1);
+        to_user.followers.splice((to_user.followers as string[]).indexOf(from_user._id), 1);
         await from_user.save();
         await to_user.save();
         res.status(200).json({ success: true });
