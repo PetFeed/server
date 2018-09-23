@@ -87,7 +87,7 @@ router.post("/follow", async (req, res) => {
     try {
         const from_user = await getUserById(req.user!);
         const to_user = await getUserById(to_id);
-        if ((from_user.following as string[]).indexOf(to_id) > 0 || (to_user.followers as string[]).indexOf(req.user!!) > 0) {
+        if ((from_user.following as string[]).indexOf(to_id) > -1 || (to_user.followers as string[]).indexOf(req.user!!) > -1) {
             throw Error("Exist User");
             return;
         }
