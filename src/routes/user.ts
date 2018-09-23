@@ -42,9 +42,6 @@ router.get("/", async (req, res) => {
 
 // 유저 정보 변경
 router.patch("/", upload.single("profile"), async function(req, res) {
-    const {
-        body: { nickname }
-    } = req;
     const profile = req.file ? (req.file.filename ? "/images/" + req.file.filename : undefined) : undefined;
     // console.log(req.file, !nickname);
     const update = filterMap({ ...req.body, profile });
