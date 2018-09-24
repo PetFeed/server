@@ -140,7 +140,7 @@ router.get("/boards", async (req, res) => {
 router.get("/notice", async (req, res) => {
     try {
         const user = await User.findOne({ _id: req.user }).populate({ path: "logs", populate: { path: "from" }, match: { to: { $eq: req.user } } });
-        res.status(200).json({ succes: true, data: user });
+        res.status(200).json({ success: true, data: user });
     } catch (e) {
         res.status(400).json({ success: false, message: e.message });
     }
