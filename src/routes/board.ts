@@ -99,7 +99,14 @@ router.post("/", upload.array("pictures"), async (req, res) => {
 router.patch("/", async (req, res) => {});
 
 // Del Board
-router.delete("/", async (req, res) => {});
+router.delete("/", async (req, res) => {
+    try {
+    	await Board.deleteOne({_id: req.body.board_id});
+	res.status(200).json({success: true});
+    } catch(e) {
+       res.status(400).json({success: false, message: e.message});
+    }
+});
 
 // Board
 router.post("/like", async (req, res) => {

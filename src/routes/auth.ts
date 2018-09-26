@@ -48,7 +48,7 @@ router.post('/register', async (req: Request, res: Response) => {
 			throw Error('Exist User');
 		}
 	} catch (e) {
-		res.status(200).json({ succses: false, message: e.message });
+		res.status(200).json({ success: false, message: e.message });
 	}
 });
 
