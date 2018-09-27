@@ -268,6 +268,20 @@
     "@types/events" "*"
     "@types/node" "*"
 
+"@types/mongoose-simple-random@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@types/mongoose-simple-random/-/mongoose-simple-random-0.4.4.tgz#5eb2da5dd17ba6c058db90064e211dea1e336452"
+  dependencies:
+    "@types/mongoose" "*"
+
+"@types/mongoose@*":
+  version "5.2.17"
+  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.2.17.tgz#cea448667810f4e27cd1e27067ee2e534018d227"
+  dependencies:
+    "@types/events" "*"
+    "@types/mongodb" "*"
+    "@types/node" "*"
+
 "@types/mongoose@^5.2.9":
   version "5.2.9"
   resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.2.9.tgz#28357437bf8873e93de2f0c8b5cf67b82d8f7181"
@@ -2254,6 +2268,10 @@ mongodb@3.1.4:
 mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
+
+mongoose-simple-random@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/mongoose-simple-random/-/mongoose-simple-random-0.4.1.tgz#09054d8555826730209a7405b1d73cb4a8f91aa3"
 
 mongoose@^5.2.12:
   version "5.2.12"

@@ -34,11 +34,65 @@ app.use(
 app.get('/', (req, res) => {
 	res.send(`PetFeed server running at ${app.get('port')} port`);
 });
+
 app.get('/search/:query', async (req, res) => {
 	try {
-		const users = await User.find({ nickname: { $in: req.params.query } });
-		const boards = await Board.find({ hash_tags: { $in: req.params.query } });
-		res.status(200).json({ success: true, data: { users, boards } });
+		if (/^#/.exec(req.params.query)) {
+			const boards = await Board.find({ hash_tags: { $in: req.params.query } });
+			await HashTag.findOneAndUpdate({ tag: req.params.query }, { $inc: { searching: 1 } });
+			res.status(200).json({ success: true, data: { boards } });
+		} else {
+			const users = await User.find({ nickname: { $in: req.params.query } });
+			res.status(200).json({ success: true, data: { users } });
+		}
+	} catch (e) {
+		res.status(400).json({ success: false, message: e.message });
+	}
+});
+app.get('/trend_hashtag', async (req, res) => {
+	try {
+		const tags = await HashTag.find({}).sort('-new').limit(3);
+		res.status(200).json({ success: true, data: { tags } });
+	} catch (e) {
+		res.status(400).json({ success: false, message: e.message });
+	}
+});
+app.get('/hashtag', async (req, res) => {
+	try {
+		const tags = await HashTag.findRandom({}, {}, { limit: 10 });
+		res.status(200).json({ success: true, data: { tags } });
+	} catch (e) {
+		res.status(400).json({ success: false, message: e.message });
+	}
+});
+app.get('/trend_board', async (req, res) => {
+	try {
+		// const boards = await Board.find({}).sort({});
+		const boards = await Board.aggregate([
+			{
+				$project: {
+					createdate: 1,
+					contents: 1,
+					pictures: 1,
+					lowPictures: 1,
+					writer: 1,
+					comments: 1,
+					hash_tags: 1,
+					likes: 1,
+					likes_num: { $size: '$likes' }
+				}
+			},
+			{ $sort: { likes_num: -1 } }
+		]);
+		const nDate: Date = new Date();
+
+		const fBoards = (boards as BoardModel[]).filter((board) => {
+			return (
+				nDate.valueOf() - board.createdate.valueOf() > -3577363 &&
+				nDate.valueOf() - board.createdate.valueOf() < 0
+			);
+		});
+		res.send(200).json({ success: true, data: fBoards });
 	} catch (e) {
 		res.status(400).json({ success: false, message: e.message });
 	}
@@ -62,7 +116,8 @@ import boardController from './routes/board';
 import commentController from './routes/comments';
 import { verifyJWTMiddleware, getToday } from './utils';
 import User from './models/User';
-import Board from './models/Board';
+import Board, { BoardModel } from './models/Board';
+import HashTag from './models/HashTag';
 app.use('/auth', authController);
 app.use('/user', verifyJWTMiddleware, userController);
 app.use('/board', verifyJWTMiddleware, boardController);
