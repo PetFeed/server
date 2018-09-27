@@ -39,14 +39,17 @@ app.get('/', (req, res) => {
 	res.send(`PetFeed server running at ${app.get('port')} port`);
 });
 
-app.get('/search/:query', async (req, res) => {
+app.post('/search', async (req, res) => {
 	try {
-		if (/^#/.exec(req.params.query)) {
-			const boards = await Board.find({ 'hash_tags.tag': { $in: req.params.query } });
+		if (/^#/.exec(req.body.query)) {
+			console.log(req.body.query)
+			let boards = await Board.find({}).populate({path: 'hash_tags'});
+			
+			// const boards = await Board.find({'hash_tags': {$elemMatch: {tag: req.body.query}}});
 			await HashTag.findOneAndUpdate({ tag: req.params.query }, { $inc: { searching: 1 } });
 			res.status(200).json({ success: true, data: { boards } });
 		} else {
-			const users = await User.find({ nickname: { $in: req.params.query } });
+			const users = await User.find({ nickname: { $in: req.body.query } });
 			res.status(200).json({ success: true, data: { users } });
 		}
 	} catch (e) {
@@ -63,8 +66,17 @@ app.get('/trend_hashtag', async (req, res) => {
 });
 app.get('/hashtag', async (req, res) => {
 	try {
-		const tags = await HashTag.findRandom({}, {}, { limit: 10 });
-		res.status(200).json({ success: true, data: { tags } });
+		HashTag.findRandom({}, {}, { limit: 10 }, async (err, result) => {
+			if(err) {
+				throw err;
+				return;
+			}
+			console.log(result);
+			const boards = await Promise.all(result.map(async tag => {
+				return await Board.findOne({hash_tags: {$in: tag.id}}).populate('hash_tags');
+			}))
+			res.status(200).json({ success: true, data: { boards: boards } });
+		});
 	} catch (e) {
 		res.status(400).json({ success: false, message: e.message });
 	}
@@ -92,11 +104,11 @@ app.get('/trend_board', async (req, res) => {
 
 		const fBoards = (boards as BoardModel[]).filter((board) => {
 			return (
-				nDate.valueOf() - board.createdate.valueOf() > -3577363 &&
-				nDate.valueOf() - board.createdate.valueOf() < 0
+				board.createdate.valueOf() - nDate.valueOf() > -3577363 &&
+				board.createdate.valueOf() - nDate.valueOf() < 0
 			);
 		});
-		res.send(200).json({ success: true, data: fBoards });
+		res.status(200).json({ success: true, data: fBoards });
 	} catch (e) {
 		res.status(400).json({ success: false, message: e.message });
 	}

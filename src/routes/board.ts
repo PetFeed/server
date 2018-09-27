@@ -105,7 +105,7 @@ router.post('/', upload.array('pictures'), async (req, res) => {
 
 				const lowFileName = 'low_' + fileName.split('.')[0] + '.webp';
 				await sharp(filePath)
-					.webp({ quality: 50 })
+					.webp({ quality: 30 })
 					.toFile(path.resolve('public', 'boards', userId, boardId, lowFileName));
 				return 'boards/' + userId + '/' + boardId + '/' + lowFileName;
 			});
