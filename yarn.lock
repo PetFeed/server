@@ -268,6 +268,20 @@
     "@types/events" "*"
     "@types/node" "*"
 
+"@types/mongoose-simple-random@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@types/mongoose-simple-random/-/mongoose-simple-random-0.4.4.tgz#5eb2da5dd17ba6c058db90064e211dea1e336452"
+  dependencies:
+    "@types/mongoose" "*"
+
+"@types/mongoose@*":
+  version "5.2.17"
+  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.2.17.tgz#cea448667810f4e27cd1e27067ee2e534018d227"
+  dependencies:
+    "@types/events" "*"
+    "@types/mongodb" "*"
+    "@types/node" "*"
+
 "@types/mongoose@^5.2.9":
   version "5.2.9"
   resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.2.9.tgz#28357437bf8873e93de2f0c8b5cf67b82d8f7181"
@@ -303,6 +317,10 @@
 "@types/node@^9.4.6":
   version "9.6.31"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.31.tgz#4d1722987f8d808b4c194dceb8c213bd92f028e5"
+
+"@types/randomstring@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@types/randomstring/-/randomstring-1.1.6.tgz#45cdc060a6f043d610bcd46503a6887db2a209c3"
 
 "@types/range-parser@*":
   version "1.2.2"
@@ -436,6 +454,10 @@ array-union@^1.0.1:
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-1.0.2.tgz#9a34410e4f4e3da23dea375be5be70f24778ec39"
   dependencies:
     array-uniq "^1.0.1"
+
+array-uniq@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/array-uniq/-/array-uniq-1.0.2.tgz#5fcc373920775723cfd64d65c64bef53bf9eba6d"
 
 array-uniq@^1.0.1, array-uniq@^1.0.3:
   version "1.0.3"
@@ -2255,6 +2277,10 @@ mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
 
+mongoose-simple-random@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/mongoose-simple-random/-/mongoose-simple-random-0.4.1.tgz#09054d8555826730209a7405b1d73cb4a8f91aa3"
+
 mongoose@^5.2.12:
   version "5.2.12"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.2.12.tgz#b8eda7947fe9b2b9b2decac01c0afed5e59dbcb5"
@@ -2811,6 +2837,12 @@ qs@6.5.1:
 qs@6.5.2, qs@^6.5.2, qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
+
+randomstring@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/randomstring/-/randomstring-1.1.5.tgz#6df0628f75cbd5932930d9fe3ab4e956a18518c3"
+  dependencies:
+    array-uniq "1.0.2"
 
 range-parser@~1.2.0:
   version "1.2.0"
