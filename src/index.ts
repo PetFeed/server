@@ -73,7 +73,7 @@ app.get('/hashtag', async (req, res) => {
 			}
 			const boards = await Promise.all(
 				result!!.map(async (tag) => {
-					return await Board.findOne({ hash_tags: { $in: tag.id } }).populate('hash_tags');
+					return await Board.findOne({ hash_tags: { $in: tag.id } }).populate('hash_tags').populate({path: 'comments', populate: {path: 're_comments'}});
 				})
 			);
 			res.status(200).json({ success: true, data: { boards: boards } });
@@ -85,7 +85,7 @@ app.get('/hashtag', async (req, res) => {
 app.get('/trend_board', async (req, res) => {
 	try {
 		// const boards = await Board.find({}).sort({});
-		const boards = await Board.aggregate([
+		let boards = await Board.aggregate([
 			{
 				$project: {
 					createdate: 1,
@@ -101,11 +101,12 @@ app.get('/trend_board', async (req, res) => {
 			},
 			{ $sort: { likes_num: -1 } }
 		]);
+		boards = await Board.populate(boards, [{path: 'writer'}, {path: 'comments', populate: [{path: 'writer'}, {path: 're_comments', populate: {path: 'writer'}}]}]);
 		const nDate: Date = new Date();
 
 		const fBoards = (boards as BoardModel[]).filter((board) => {
 			return (
-				board.createdate.valueOf() - nDate.valueOf() > -3577363 &&
+				board.createdate.valueOf() - nDate.valueOf() > -21599126 &&
 				board.createdate.valueOf() - nDate.valueOf() < 0
 			);
 		});
