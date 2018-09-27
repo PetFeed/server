@@ -3,6 +3,10 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import fs from 'fs';
+import randomstring from 'randomstring';
+
+const { Iamporter, IamporterError } = require('iamporter');
+const iamporter = new Iamporter();
 
 import * as utils from './utils';
 
@@ -122,6 +126,46 @@ app.use('/auth', authController);
 app.use('/user', verifyJWTMiddleware, userController);
 app.use('/board', verifyJWTMiddleware, boardController);
 app.use('/comment', verifyJWTMiddleware, commentController);
+
+app.post('/card', verifyJWTMiddleware, async (req, res) => {
+	const { body: { card_number, expiry, birth, pwd_2digit } } = req;
+	iamporter
+		.createSubscription({
+			customer_uid: req.user!!,
+			card_number,
+			expiry,
+			birth,
+			pwd_2digit
+		})
+		.then((result) => {
+			res.status(200).json({ success: true, data: result.data });
+		})
+		.catch((err) => {
+			res.status(400).json({ success: false, message: err.message });
+		});
+});
+app.delete('/card', verifyJWTMiddleware, async (req, res) => {
+	try {
+		const result = await iamporter.deleteSubscription(req.user!!);
+		res.status(200).json({ success: true });
+	} catch (e) {
+		res.status(400).json({ success: false, message: e.message });
+	}
+});
+app.post('/pay', verifyJWTMiddleware, async (req, res) => {
+	try {
+		await iamporter.getSubscription(req.user!!).then();
+		const result = await iamporter.paySubscription({
+			customer_uid: req.user!!,
+			merchant_uid: randomstring.generate(),
+			amount: req.body.amount
+		});
+		console.log(result);
+		res.status(200).json({ success: true, data: result });
+	} catch (e) {
+		res.status(400).json({ success: false, messgae: e.message });
+	}
+});
 
 app.listen(app.get('port'), () => {
 	console.log('server running at %d port', app.get('port'));
