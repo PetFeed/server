@@ -34,6 +34,15 @@ app.use(
 app.get('/', (req, res) => {
 	res.send(`PetFeed server running at ${app.get('port')} port`);
 });
+app.get('/search/:query', async (req, res) => {
+	try {
+		const users = await User.find({ nickname: { $in: req.params.query } });
+		const boards = await Board.find({ hash_tags: { $in: req.params.query } });
+		res.status(200).json({ success: true, data: { users, boards } });
+	} catch (e) {
+		res.status(400).json({ success: false, message: e.message });
+	}
+});
 // app.get('/fcm-test', (req, res) => {
 // 	const fcmMsg = {
 // 		message: {
@@ -52,6 +61,8 @@ import userController from './routes/user';
 import boardController from './routes/board';
 import commentController from './routes/comments';
 import { verifyJWTMiddleware, getToday } from './utils';
+import User from './models/User';
+import Board from './models/Board';
 app.use('/auth', authController);
 app.use('/user', verifyJWTMiddleware, userController);
 app.use('/board', verifyJWTMiddleware, boardController);
