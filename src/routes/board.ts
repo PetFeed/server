@@ -49,7 +49,6 @@ router.post('/', upload.array('pictures'), async (req, res) => {
 	try {
 		const { body: { contents } } = req;
 		let hash_tags;
-		console.log(req.body.hash_tags as String[]);
 		if (req.body.hash_tags) {
 			hash_tags = await Promise.all(
 				req.body.hash_tags.map(async (tag) => {
@@ -145,7 +144,7 @@ router.post('/like', async (req, res) => {
 			const idx = (board.likes as string[]).indexOf(req.user!!);
 			if (idx < 0) {
 				(board.likes as string[]).push(req.user!!);
-				makeBoardLog(req.user!!, board.writer as string, board._id);
+				if (!board._id.equals(req.user)) makeBoardLog(req.user!!, board.writer as string, board._id);
 			} else {
 				(board.likes as string[]).splice(idx, 1);
 			}
