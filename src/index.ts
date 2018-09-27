@@ -42,9 +42,9 @@ app.get('/', (req, res) => {
 app.post('/search', async (req, res) => {
 	try {
 		if (/^#/.exec(req.body.query)) {
-			console.log(req.body.query)
-			let boards = await Board.find({}).populate({path: 'hash_tags'});
-			
+			console.log(req.body.query);
+			let boards = await Board.find({}).populate({ path: 'hash_tags' });
+
 			// const boards = await Board.find({'hash_tags': {$elemMatch: {tag: req.body.query}}});
 			await HashTag.findOneAndUpdate({ tag: req.params.query }, { $inc: { searching: 1 } });
 			res.status(200).json({ success: true, data: { boards } });
@@ -67,14 +67,15 @@ app.get('/trend_hashtag', async (req, res) => {
 app.get('/hashtag', async (req, res) => {
 	try {
 		HashTag.findRandom({}, {}, { limit: 10 }, async (err, result) => {
-			if(err) {
+			if (err) {
 				throw err;
 				return;
 			}
-			console.log(result);
-			const boards = await Promise.all(result.map(async tag => {
-				return await Board.findOne({hash_tags: {$in: tag.id}}).populate('hash_tags');
-			}))
+			const boards = await Promise.all(
+				result!!.map(async (tag) => {
+					return await Board.findOne({ hash_tags: { $in: tag.id } }).populate('hash_tags');
+				})
+			);
 			res.status(200).json({ success: true, data: { boards: boards } });
 		});
 	} catch (e) {

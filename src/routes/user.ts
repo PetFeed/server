@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import { Types } from 'mongoose';
-import sharp from "sharp";
-import path from "path";
+import sharp from 'sharp';
+import path from 'path';
 
 import User, { UserModel } from '../models/User';
 import { filterMap, getToday } from '../utils';
@@ -18,9 +18,9 @@ const storage = multer.diskStorage({
 	},
 	async filename(req, file, cb) {
 		const user = await getUserById(req.user!);
-		console.log(file.mimetype)
-		if(file.mimetype == "image/*") {
-			cb(null, user.nickname + '-' + getToday() + '.' + 'png');	
+		console.log(file.mimetype);
+		if (file.mimetype == 'image/*') {
+			cb(null, user.nickname + '-' + getToday() + '.' + 'png');
 		} else {
 			cb(null, user.nickname + '-' + getToday() + '.' + file.mimetype.split('/')[1]);
 		}
@@ -51,25 +51,23 @@ router.get('/', async (req, res) => {
 router.patch('/', upload.single('profile'), async function(req, res) {
 	try {
 		let profile;
-		if(req.file) {
+		if (req.file) {
 			profile = req.file ? (req.file.filename ? req.file.filename : undefined) : undefined;
 			const profilePath = path.resolve('public', 'images', profile);
 			const lowProfile = 'low_' + req.file.filename + '.webp';
-			console.log(profile, profilePath)
-			await sharp(profilePath)
-				.webp({quality: 10})
-				.toFile(path.resolve('public', 'images', lowProfile));
+			console.log(profile, profilePath);
+			await sharp(profilePath).webp({ quality: 10 }).toFile(path.resolve('public', 'images', lowProfile));
 			profile = '/images/' + lowProfile;
 		}
-		console.log("asdfasdf", profile)
-	// console.log(req.file, !nickname);
+		console.log('asdfasdf', profile);
+		// console.log(req.file, !nickname);
 		const update = filterMap({ ...req.body, profile });
-	// console.log(filtered);
+		// console.log(filtered);
 		const user = await User.findOneAndUpdate({ _id: req.user }, { $set: update });
 		console.log(user);
 		res.status(200).json({ success: true });
 	} catch (e) {
-		console.log(e)
+		console.log(e);
 		res.status(200).json({ success: false, message: e.message });
 	}
 });
@@ -151,8 +149,8 @@ router.get('/boards', async (req, res) => {
 			.sort('-createdate')
 			.populate('writer')
 			.populate('comments')
-			.populate({ path: 'comments', populate: { path: 'writer'} })
-			.populate({ path: 'comments', populate: { path: 're_comments', populate: { path: 'writer'}}});
+			.populate({ path: 'comments', populate: { path: 'writer' } })
+			.populate({ path: 'comments', populate: { path: 're_comments', populate: { path: 'writer' } } });
 		res.status(200).json({ success: true, data: boards });
 	} catch (e) {
 		res.status(200).json({ success: false, message: e.message });
@@ -164,10 +162,10 @@ router.get('/notice', async (req, res) => {
 		const user = await User.findOne({ _id: req.user }).populate({
 			path: 'logs',
 			populate: { path: 'from' },
-			match: { to: { $eq: req.user } },
+			match: { to: { $eq: req.user } }
 		});
-		console.log(user)
-		res.status(200).json({ success: true, data: user  });
+		console.log(user);
+		res.status(200).json({ success: true, data: user });
 	} catch (e) {
 		res.status(400).json({ success: false, message: e.message });
 	}
