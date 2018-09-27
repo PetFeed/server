@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 app.get('/search/:query', async (req, res) => {
 	try {
 		if (/^#/.exec(req.params.query)) {
-			const boards = await Board.find({ hash_tags: { $in: req.params.query } });
+			const boards = await Board.find({ 'hash_tags.tag': { $in: req.params.query } });
 			await HashTag.findOneAndUpdate({ tag: req.params.query }, { $inc: { searching: 1 } });
 			res.status(200).json({ success: true, data: { boards } });
 		} else {
@@ -102,17 +102,17 @@ app.get('/trend_board', async (req, res) => {
 	}
 });
 app.get('/fcm-test', (req, res) => {
- 	const fcmMsg = {
- 		message: {
- 			token:
- 				'mcil1iZXkQ:APA91bGIQOYBBMCkZBX9Aj-ybZgAdr_SiYuwNWPp9XBeesYMc57_gbULp4oflHHOmY--YwhtktSzncHvzeRawfyrV3cndNF613DkPHSDgoezJWas-ruxuuRaMLSXRoKd-qdfdfrd-UG8',
- 			data: {
- 				body: '왜사냐',
- 				title: '나인채 병신'
- 			}
- 		}
- 	};
- 	utils.sendFcmMessage(fcmMsg);
+	const fcmMsg = {
+		message: {
+			token:
+				'mcil1iZXkQ:APA91bGIQOYBBMCkZBX9Aj-ybZgAdr_SiYuwNWPp9XBeesYMc57_gbULp4oflHHOmY--YwhtktSzncHvzeRawfyrV3cndNF613DkPHSDgoezJWas-ruxuuRaMLSXRoKd-qdfdfrd-UG8',
+			data: {
+				body: '왜사냐',
+				title: '나인채 병신'
+			}
+		}
+	};
+	utils.sendFcmMessage(fcmMsg);
 });
 import authController from './routes/auth';
 import userController from './routes/user';

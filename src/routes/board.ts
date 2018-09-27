@@ -50,26 +50,26 @@ router.post('/', upload.array('pictures'), async (req, res) => {
 		const { body: { contents } } = req;
 		let hash_tags;
 		console.log(req.body.hash_tags as String[]);
-		if(req.body.hash_tags) {
+		if (req.body.hash_tags) {
 			hash_tags = await Promise.all(
-			req.body.hash_tags.map(async (tag) => {
-				let tagDB = await HashTag.findOne({ tag });
-				if (tagDB) {
-					tagDB.new++;
-					tagDB.num++;
-					await tagDB.save();
-					return tagDB._id;
-				} else {
-					tagDB = new HashTag({
-						tag
-					});
-					tagDB.new++;
-					tagDB.num++;
-					await tagDB.save();
-					return tagDB._id;
-				}
-			})
-		);
+				req.body.hash_tags.map(async (tag) => {
+					let tagDB = await HashTag.findOne({ tag });
+					if (tagDB) {
+						tagDB.new++;
+						tagDB.num++;
+						await tagDB.save();
+						return tagDB._id;
+					} else {
+						tagDB = new HashTag({
+							tag
+						});
+						tagDB.new++;
+						tagDB.num++;
+						await tagDB.save();
+						return tagDB._id;
+					}
+				})
+			);
 		}
 
 		const board = new Board({
@@ -124,13 +124,13 @@ router.post('/', upload.array('pictures'), async (req, res) => {
 router.patch('/', async (req, res) => {});
 
 // Del Board
-router.delete("/", async (req, res) => {
-    try {
-    	await Board.deleteOne({_id: req.body.board_id});
-	res.status(200).json({success: true});
-    } catch(e) {
-       res.status(400).json({success: false, message: e.message});
-    }
+router.delete('/', async (req, res) => {
+	try {
+		await Board.deleteOne({ _id: req.body.board_id });
+		res.status(200).json({ success: true });
+	} catch (e) {
+		res.status(400).json({ success: false, message: e.message });
+	}
 });
 
 // Board
