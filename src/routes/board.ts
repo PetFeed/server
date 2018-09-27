@@ -48,8 +48,10 @@ router.get('/', async (req, res) => {
 router.post('/', upload.array('pictures'), async (req, res) => {
 	try {
 		const { body: { contents } } = req;
+		let hash_tags;
 		console.log(req.body.hash_tags);
-		const hash_tags = await Promise.all(
+		if(req.body.hash_tags) {
+			hash_tags = await Promise.all(
 			req.body.hash_tags.map(async (tag) => {
 				let tagDB = await HashTag.findOne({ tag });
 				if (tagDB) {
@@ -68,6 +70,7 @@ router.post('/', upload.array('pictures'), async (req, res) => {
 				}
 			})
 		);
+		}
 
 		const board = new Board({
 			contents,
@@ -112,6 +115,7 @@ router.post('/', upload.array('pictures'), async (req, res) => {
 		await board.save();
 		res.status(200).json({ success: true, data: board });
 	} catch (e) {
+		console.log(e);
 		res.status(400).json({ succes: false, message: e.message });
 	}
 });

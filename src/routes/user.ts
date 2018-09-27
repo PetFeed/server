@@ -132,7 +132,8 @@ router.get('/boards', async (req, res) => {
 			.sort('-createdate')
 			.populate('writer')
 			.populate('comments')
-			.populate({ path: 'comments', populate: { path: 'writer' } });
+			.populate({ path: 'comments', populate: { path: 'writer'} })
+			.populate({ path: 'comments', populate: { path: 're_comments', populate: { path: 'writer'}}});
 		res.status(200).json({ success: true, data: boards });
 	} catch (e) {
 		res.status(200).json({ success: false, message: e.message });

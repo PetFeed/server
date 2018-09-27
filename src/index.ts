@@ -101,19 +101,19 @@ app.get('/trend_board', async (req, res) => {
 		res.status(400).json({ success: false, message: e.message });
 	}
 });
-// app.get('/fcm-test', (req, res) => {
-// 	const fcmMsg = {
-// 		message: {
-// 			token:
-// 				'eBDzitKuLhM:APA91bGKWmbKy7GPqOrmm7NuoKdCJsT6PpPW_UvXWkGBqihhf23AMEQyu-Ktj263OS7d33b7GkPWxZ4UeYPe59u7sk99vbbfPEtZ36gplMx3YJMxHPGhcBuLAkUwsNnxtb4jNLe8eGmX',
-// 			data: {
-// 				body: '왜사냐',
-// 				title: '나인채 병신'
-// 			}
-// 		}
-// 	};
-// 	utils.sendFcmMessage(fcmMsg);
-// });
+app.get('/fcm-test', (req, res) => {
+ 	const fcmMsg = {
+ 		message: {
+ 			token:
+ 				'mcil1iZXkQ:APA91bGIQOYBBMCkZBX9Aj-ybZgAdr_SiYuwNWPp9XBeesYMc57_gbULp4oflHHOmY--YwhtktSzncHvzeRawfyrV3cndNF613DkPHSDgoezJWas-ruxuuRaMLSXRoKd-qdfdfrd-UG8',
+ 			data: {
+ 				body: '왜사냐',
+ 				title: '나인채 병신'
+ 			}
+ 		}
+ 	};
+ 	utils.sendFcmMessage(fcmMsg);
+});
 import authController from './routes/auth';
 import userController from './routes/user';
 import boardController from './routes/board';
