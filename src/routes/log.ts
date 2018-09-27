@@ -153,6 +153,7 @@ export const makeCommentLog = async (from: string, to: string, commentId) => {
             throw Error("Log User not found!");
         }
     } catch (e) {
+        console.log(e)
         throw e;
     }
 };
