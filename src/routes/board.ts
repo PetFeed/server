@@ -49,7 +49,7 @@ router.post('/', upload.array('pictures'), async (req, res) => {
 	try {
 		const { body: { contents } } = req;
 		let hash_tags;
-		console.log(req.body.hash_tags);
+		console.log(req.body.hash_tags as String[]);
 		if(req.body.hash_tags) {
 			hash_tags = await Promise.all(
 			req.body.hash_tags.map(async (tag) => {
