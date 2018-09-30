@@ -74,8 +74,10 @@ router.post('/', upload.array('pictures'), async (req, res) => {
 		const board = new Board({
 			contents,
 			hash_tags,
-			writer: req.user
+			writer: req.user,
+			createdate: new Date()
 		});
+		console.log("board_id : " + board._id + "is crated at " + new Date());
 		if (req.files) {
 			const pendingPaths = (<Express.Multer.File[]>req.files).map(async (file) => {
 				const dest = path.resolve('public', 'boards', req.user!, board.id);

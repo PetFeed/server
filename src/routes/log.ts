@@ -131,21 +131,24 @@ export const makeCommentLog = async (from: string, to: string, commentId) => {
                 }
             };
             const fromLog = new Log({
-                type: "Board",
+                type: "Comment",
                 dataId: commentId,
-                text: `회원님이 ${toUser.nickname}의 게시물에 댓글을 남겼습니다..`,
+                text: `회원님이 ${toUser.nickname}의 게시물에 댓글을 남겼습니다.`,
                 from: fromUser._id,
                 to: toUser._id
             });
             const toLog = new Log({
-                type: "Board",
+                type: "Comment",
                 dataId: commentId,
                 text: `${fromUser.nickname}님이 회원님의 게시물에 댓글을 남겼습니다.`,
                 from: fromUser._id,
                 to: toUser._id
             });
+	    await fromLog.save();
             fromUser.logs.push(fromLog);
             await fromUser.save();
+
+	    await toLog.save();
             toUser.logs.push(toLog);
             await toUser.save();
             sendFcmMessage(fcmMsg);

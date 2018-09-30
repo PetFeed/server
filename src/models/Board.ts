@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import { UserModel } from './User';
 import { CommentModel } from './Comment';
 import { HashTagModel } from './HashTag';
+import moment from "moment"
+require("moment-timezone");
+moment.tz.setDefault("Asia/Seoul");
 
 export interface BoardModel extends mongoose.Document {
 	createdate: Date;
@@ -15,7 +18,7 @@ export interface BoardModel extends mongoose.Document {
 }
 
 const boardSchema = new mongoose.Schema({
-	createdate: { type: Date, default: new Date() },
+	createdate: { type: Date },
 	contents: { type: String },
 	pictures: [ { type: String } ],
 	lowPictures: [ { type: String } ],
